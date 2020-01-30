@@ -8,6 +8,6 @@
 <center>
 <h2>《自由之战》粉丝官网<h3>
 
-
+<a href="https://jq.qq.com/?_wv=1027&k=5WikX6f"><button>官方Q群</button>
 </center>
 </html>
