@@ -8,7 +8,217 @@
 <center>
 <h2>《自由之战》粉丝官网<h3>
 </center>
+<style type="text/css">
+			li,
+			ul {
+				list-style: none;
+			}
 
+			* {
+				margin: 0;
+				padding: 0;
+			}
+
+			.box {
+				width: 614px;
+				height: 230px;
+				border: 1px solid red;
+				margin: 100px auto;
+				position: relative;
+				overflow: hidden;
+			}
+
+			.box .list {
+				width: 600%;
+				height: 100%;
+				position: absolute;
+
+			}
+
+			li {
+				width: 614px;
+				height: 100%;
+				float: left;
+			}
+
+			img {
+				width: 100%;
+				height: 100%;
+			}
+
+			.left,
+			.right {
+				width: 20px;
+				height: 20px;
+				position: absolute;
+				opacity: 0.5;
+			}
+
+			.left {
+				top: 105px;
+			}
+
+			.right {
+				right: 0px;
+				top: 105px;
+
+			}
+
+			.right:hover {
+				opacity: 1;
+			}
+
+			.left:hover {
+				opacity: 1;
+			}
+
+			.dotts {
+				position: absolute;
+				
+				bottom: 20px;
+				left: 220px;
+				
+			}
+
+			.dotts li {
+				width: 8px;
+				height: 8px;
+				background-color: skyblue;
+				border-radius: 50%;
+				float: left;
+				margin-left: 20px;
+				box-sizing: border-box;
+				opacity: 0.5;
+			}
+
+			.dot.active {
+				border: 1px solid gray;
+				opacity: 1;
+			}
+
+			.dot:hover {
+				border: 1px solid gray;
+				opacity: 1;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<ul class="list">//图片自行添加
+				<li><img src="img/m1.jpg"></li>
+				<li><img src="img/m2.jpg"></li>
+				<li><img src="img/m6.jpg"></li>
+				<li><img src="img/m4.jpg"></li>
+				<li><img src="img/m5.jpg"></li>
+				<li><img src="img/m1.jpg"></li>
+			</ul>
+			<ul>
+				<img class="left" onclick="changeleft()" src="img/left.png">//按钮图片自行添加
+				<img class="right" onclick="changeright()" src="img/right.png">
+			</ul>
+			<ul class="dotts">//圆点
+				<li class="dot active"></li>
+				<li class="dot"></li>
+				<li class="dot"></li>
+				<li class="dot"></li>
+				<li class="dot"></li>
+			</ul>
+		</div>
+		<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var list = document.querySelector('.list'); //获取需要移动的盒子
+			var ulEal = document.querySelector('ul'); //获取ul
+			var distance = ulEal.children[1].offsetWidth; //获取图片宽度
+			var dottls = $('.dotts').children; //获取全部圆点
+			var dotttle = document.querySelector('.dotts').children;//获取圆点children数组用于绑定事件
+			var box = document.querySelector('.box');//获取盒子对象
+			var autamotic = null;
+
+			var count = 0; //声明计数器
+			AutomaticallRound();//自动轮播
+
+			function changeright() {//右按钮点击事件
+				if (count === 5) {//0和5图片是一样的这一步目的使图片运动衔接更紧密
+					list.style.left = '0px';//调到最前面
+					count = 0;
+				}
+				count++;
+				changeimg(list, count);
+				var active = document.querySelector('.dot.active');
+				if (count == 5) {//使圆点随着图片运动
+					active.classList.remove('active');
+					dotttle[0].classList.add('active');
+				} else {
+					active.classList.remove('active');
+					dotttle[count].classList.add('active');
+				}
+
+
+
+			}
+
+			function changeleft() {//绑定左点击事件
+				if (count === 0) {
+					list.style.left = -5 * distance + 'px';
+					count = 5;
+				}
+				count--;
+				changeimg(list, count);
+				var active = document.querySelector('.dot.active');
+				active.classList.remove('active');
+				dotttle[count].classList.add('active');
+
+
+			}
+
+			function AutomaticallRound() { //自动轮播
+				autamotic = setInterval(function() {
+					changeright(); //调用方法
+				}, 4000)
+			}
+
+			box.onmouseenter = function() { //鼠标hover盒子的时候停止轮播
+				clearInterval(autamotic);
+			}
+			box.onmouseleave = function() { //鼠标离开盒子轮播继续
+				AutomaticallRound();
+			}
+
+			for (var i = 0; i < dotttle.length; i++) { //给圆点绑定事件切换图片
+				dotttle[i].index = i; //声明index
+				dotttle[i].onclick = function() { //绑定点击事件
+					document.querySelector('.dot.active').classList.remove('active'); //删除类名
+					this.classList.add('active'); //添加类名
+					count = this.index; //给计数器赋值
+					changeimg(list, count); //改变图片
+				}
+			}
+
+
+
+			function changeimg(ele, count) { //改变图片
+				clearInterval(ele.timmer);//清除计时器防止连点时候发生错误
+				ele.timmer = setInterval(function() {
+					var start = ele.offsetLeft;
+					var step = (-distance * count - start) / 10;
+					if (Math.abs(step) < 1) {
+						step = step > 0 ? 1 : Math.floor(step);
+					}
+					start += step;
+					ele.style.left = start + 'px';
+					if (start === -(distance * count)) {//-是因为图片的运动是反的are you OK?
+						clearInterval(ele.timmer);//清除定时器
+						console.log('stop');
+					}
+				}, 17)
+			}
+		</script>
+	</body>
+</html>
+
+————————————————
+版权声明：本文为CSDN博主「前端菜鸡008」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/fghgfhhg/article/details/100173046
 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=450 src="//music.163.com/outchain/player?type=4&id=332102083&auto=0&height=430"></iframe>  
 
 </html>
